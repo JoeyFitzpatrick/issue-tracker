@@ -1,41 +1,50 @@
-import { useState } from "react";
-import clientPromise from "../lib/mongodb";
+import { useState, useEffect } from "react";
 
 import { Row, Col, Form, Button } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 const testIssue = {
   title: "First issue",
-  body: "this is a test",
+  content: "this is a test",
   priority: "medium",
   user: "Joey",
   date: Date(),
   tags: ["test", "database"],
 };
 
-export default function Create({ users }) {
+export default function Create({ issues }) {
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(issueTitle, issueText, priority);
-    console.log(users)
+    let res = await fetch("http://localhost:3000/api/issues", {
+      method: "POST",
+      body: JSON.stringify({
+        title: issueTitle,
+        content: issueText,
+        priority: priority,
+        user: "Joey",
+        date: Date(),
+        tags: ["test", "database"],
+      }),
+    });
+    res = await res.json();
+    setIssueTitle("");
+    setIssueText("");
+    e.target.reset()
   };
 
   const handleIssueTitleChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setIssueTitle(e.target.value);
   };
 
   const handleIssueTextChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setIssueText(e.target.value);
   };
 
   const handlePriorityChange = (e) => {
-    console.log(e.target.name, e.target.value);
     setPriority(e.target.value);
   };
 
@@ -92,17 +101,18 @@ export default function Create({ users }) {
       </Form>
     </>
   );
-};
+}
 
 export async function getServerSideProps(context) {
-    const client = await clientPromise;
-  
-    const db = client.db("issue_tracker_db");
-  
-    let users = await db.collection("issues").find({}).toArray();
-    users = JSON.parse(JSON.stringify(users));
-  
-    return {
-      props: { users },
-    };
-  }
+  let res = await fetch("http://localhost:3000/api/issues", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  let issues = await res.json();
+
+  return {
+    props: { issues },
+  };
+}
