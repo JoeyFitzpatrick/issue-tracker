@@ -13,7 +13,7 @@ const testIssue = {
   tags: ["test", "database"],
 };
 
-const Create = ({ db }) => {
+export default function Create({ users }) {
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
@@ -21,7 +21,7 @@ const Create = ({ db }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log(issueTitle, issueText, priority);
-    console.log(client.db())
+    console.log(users)
   };
 
   const handleIssueTitleChange = (e) => {
@@ -94,23 +94,15 @@ const Create = ({ db }) => {
   );
 };
 
-export default Create;
-
 export async function getServerSideProps(context) {
-  try {
-    // client.db() will be the default database passed in the MONGODB_URI
-    // You can change the database by calling the client.db() function and specifying a database like:
-    // const db = client.db("myDatabase");
-    // Then you can execute queries against your database like so:
-    // db.find({}) or any of the MongoDB Node Driver commands
-    await clientPromise;
+    const client = await clientPromise;
+  
+    const db = client.db("issue_tracker_db");
+  
+    let users = await db.collection("issues").find({}).toArray();
+    users = JSON.parse(JSON.stringify(users));
+  
     return {
-      props: { db: client.db() },
-    };
-  } catch (e) {
-    console.error(e);
-    return {
-      props: { db: null },
+      props: { users },
     };
   }
-}
