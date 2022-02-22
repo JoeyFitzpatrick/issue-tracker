@@ -1,24 +1,31 @@
-import { Card, Button, Row, Col } from "react-bootstrap";
+import { Card, Button, Row, Col, Alert } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import Nav from "../components/Nav"
+
 
 export default function View({ issues }) {
   return (
     <>
-      <Row xs={1} md={2} className="g-4">
-        {issues.data.map((issue) => (
-          <Col>
-            <Card>
-              <Card.Body>
-                <Card.Title>{issue.title}</Card.Title>
-                <Card.Text>{issue.content}</Card.Text>
-                <Card.Text>{issue.user}</Card.Text>
-                <Card.Text>{issue.date}</Card.Text>
-                <Button variant="primary">Go somewhere</Button>
-              </Card.Body>
-            </Card>
-          </Col>
-        ))}
-      </Row>
+    <Nav />
+      {issues.data.length > 0 ? (
+        <Row xs={1} md={2} className="g-4" style={{margin: "8em"}}>
+          {issues.data.map((issue) => (
+            <Col>
+              <Card>
+                <Card.Body>
+                  <Card.Title>{issue.title}</Card.Title>
+                  <Card.Text>{issue.content}</Card.Text>
+                  <Card.Text>{issue.user}</Card.Text>
+                  <Card.Text>{issue.date}</Card.Text>
+                  <Button variant="primary">Go somewhere</Button>
+                </Card.Body>
+              </Card>
+            </Col>
+          ))}
+        </Row>
+      ) : (
+        <Alert style={{margin: "8em"}}>No issues!</Alert>
+      )}
     </>
   );
 }

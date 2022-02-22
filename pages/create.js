@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
-
+import { useState } from "react";
 import { Row, Col, Form, Button } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+import Nav from "../components/Nav"
 
 const testIssue = {
   title: "First issue",
@@ -52,7 +52,8 @@ export default function Create({ issues }) {
 
   return (
     <>
-      <Form onSubmit={handleSubmit}>
+    <Nav />
+      <Form onSubmit={handleSubmit} style={{margin: "8em"}}>
         <Form.Group className="mb-3" controlId="createFormTitle">
           <Form.Label>Issue Title</Form.Label>
           <Form.Control
