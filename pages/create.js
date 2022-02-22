@@ -10,6 +10,7 @@ const testIssue = {
   user: "Joey",
   date: Date(),
   tags: ["test", "database"],
+  resolved: false
 };
 
 export default function Create({ issues }) {
@@ -28,6 +29,7 @@ export default function Create({ issues }) {
         user: "Joey",
         date: Date(),
         tags: ["test", "database"],
+        resolved: false
       }),
     });
     res = await res.json();

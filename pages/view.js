@@ -1,19 +1,24 @@
-import { Card, Button } from "react-bootstrap";
+import { Card, Button, Row, Col } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 export default function View({ issues }) {
   return (
     <>
-      {issues.data.map((issue) => 
-        <Card style={{ width: "18rem" }}>
-          <Card.Body>
-            <Card.Title>{issue.title}</Card.Title>
-            <Card.Text>{issue.content}</Card.Text>
-            <Card.Text>{issue.user}</Card.Text>
-            <Button variant="primary">Go somewhere</Button>
-          </Card.Body>
-        </Card>
-      )}
+      <Row xs={1} md={2} className="g-4">
+        {issues.data.map((issue) => (
+          <Col>
+            <Card>
+              <Card.Body>
+                <Card.Title>{issue.title}</Card.Title>
+                <Card.Text>{issue.content}</Card.Text>
+                <Card.Text>{issue.user}</Card.Text>
+                <Card.Text>{issue.date}</Card.Text>
+                <Button variant="primary">Go somewhere</Button>
+              </Card.Body>
+            </Card>
+          </Col>
+        ))}
+      </Row>
     </>
   );
 }
