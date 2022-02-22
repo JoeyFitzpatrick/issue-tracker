@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Row, Col, Form, Button } from "react-bootstrap";
+import { Row, Col, Form, Button, Alert } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav"
 
@@ -17,6 +17,7 @@ export default function Create({ issues }) {
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
+  const [submitted, setSubmitted] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -35,6 +36,7 @@ export default function Create({ issues }) {
     res = await res.json();
     setIssueTitle("");
     setIssueText("");
+    setSubmitted(true);
     e.target.reset()
   };
 
@@ -53,7 +55,8 @@ export default function Create({ issues }) {
   return (
     <>
     <Nav />
-      <Form onSubmit={handleSubmit} style={{margin: "8em"}}>
+      {!submitted ? 
+          <Form onSubmit={handleSubmit} style={{margin: "8em"}}>
         <Form.Group className="mb-3" controlId="createFormTitle">
           <Form.Label>Issue Title</Form.Label>
           <Form.Control
@@ -101,7 +104,7 @@ export default function Create({ issues }) {
           </Form.Group>
         </fieldset>
         <Button type="submit">Submit Issue</Button>
-      </Form>
+      </Form> : <Alert style={{margin: "8em"}} variant="success">Issue submitted!</Alert>}
     </>
   );
 }
