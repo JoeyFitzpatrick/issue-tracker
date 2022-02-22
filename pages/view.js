@@ -6,10 +6,51 @@ import Nav from "../components/Nav";
 export default function View({ issues }) {
   const [show, setShow] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
+  const [issueTitle, setIssueTitle] = useState();
+  const [issueText, setIssueText] = useState();
+  const [priority, setPriority] = useState();
+  const [submitted, setSubmitted] = useState(false);
+
   const handleClose = () => setShow(false);
   const handleShow = (issue) => {
     setShow(true);
     setSelectedIssue(issue);
+    setIssueTitle(issue.title);
+    setIssueText(issue.content);
+    setPriority(issue.priority);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/issues", {
+      method: "PUT",
+      body: JSON.stringify({
+        id: selectedIssue._id,
+        title: issueTitle,
+        content: issueText,
+        priority: priority,
+      }),
+    });
+    res = await res.json();
+    console.log(res);
+    setIssueTitle("");
+    setIssueText("");
+    setSubmitted(true);
+    setSelectedIssue(null)
+    handleClose();
+    window.location.reload(false);
+  };
+
+  const handleIssueTitleChange = (e) => {
+    setIssueTitle(e.target.value);
+  };
+
+  const handleIssueTextChange = (e) => {
+    setIssueText(e.target.value);
+  };
+
+  const handlePriorityChange = (e) => {
+    setPriority(e.target.value);
   };
   return (
     <>
@@ -24,8 +65,8 @@ export default function View({ issues }) {
               <Form.Control
                 as="textarea"
                 rows={1}
-                value={selectedIssue?.title}
-                onChange={() => console.log("click")}
+                value={issueTitle}
+                onChange={handleIssueTitleChange}
               />
             </Form.Group>
             <Form.Group className="mb-3" controlId="createFormText">
@@ -33,18 +74,18 @@ export default function View({ issues }) {
               <Form.Control
                 as="textarea"
                 rows={3}
-                value={selectedIssue?.content}
-                onChange={() => console.log("click")}
+                value={issueText}
+                onChange={handleIssueTextChange}
               />
             </Form.Group>
             <fieldset>
               <Form.Group
                 as={Row}
                 className="mb-3"
-                onChange={() => console.log("click")}
+                onChange={handlePriorityChange}
               >
-                <Form.Label as="legend" column sm={2}>
-                  Priority Level
+                <Form.Label>
+                  Priority
                 </Form.Label>
                 <Col sm={10}>
                   <Form.Check
@@ -53,7 +94,7 @@ export default function View({ issues }) {
                     value="High"
                     name="formHorizontalRadios"
                     id="formHorizontalRadios1"
-                    checked={selectedIssue?.priority === "High"}
+                    defaultChecked={selectedIssue?.priority === "High"}
                   />
                   <Form.Check
                     type="radio"
@@ -61,7 +102,7 @@ export default function View({ issues }) {
                     value="Medium"
                     name="formHorizontalRadios"
                     id="formHorizontalRadios2"
-                    checked={selectedIssue?.priority === "Medium"}
+                    defaultChecked={selectedIssue?.priority === "Medium"}
                   />
                   <Form.Check
                     type="radio"
@@ -69,7 +110,7 @@ export default function View({ issues }) {
                     value="Low"
                     name="formHorizontalRadios"
                     id="formHorizontalRadios3"
-                    checked={selectedIssue?.priority === "Low"}
+                    defaultChecked={selectedIssue?.priority === "Low"}
                   />
                 </Col>
               </Form.Group>
@@ -77,7 +118,7 @@ export default function View({ issues }) {
             <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
-            <Button variant="primary" onClick={handleClose}>
+            <Button variant="primary" onClick={handleSubmit}>
               Save Changes
             </Button>
           </Form>

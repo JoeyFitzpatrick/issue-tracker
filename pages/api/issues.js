@@ -1,4 +1,5 @@
 import clientPromise from "../../lib/mongodb";
+var ObjectId = require('mongodb').ObjectId;
 
 export default async function handler(req, res) {
   const client = await clientPromise;
@@ -12,6 +13,19 @@ export default async function handler(req, res) {
     case "GET":
       const issues = await db.collection("issues").find({}).toArray();
       res.json({ status: 200, data: issues });
+      break;
+    case "PUT":
+      let bodyObj = JSON.parse(req.body);
+      const filter = { _id: ObjectId(bodyObj.id) };
+      const update = {
+        $set: {
+          title: bodyObj.title,
+          content: bodyObj.content,
+          priority: bodyObj.priority,
+        },
+      };
+      const result = await db.collection("issues").updateOne(filter, update);
+      res.json(result)
       break;
   }
 }

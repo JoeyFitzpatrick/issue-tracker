@@ -80,7 +80,7 @@ export default function Create({ issues }) {
               onChange={handlePriorityChange}
             >
               <Form.Label as="legend" column sm={2}>
-                Priority Level
+                Priority
               </Form.Label>
               <Col sm={10}>
                 <Form.Check
