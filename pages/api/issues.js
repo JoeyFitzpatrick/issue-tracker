@@ -22,6 +22,7 @@ export default async function handler(req, res) {
           title: bodyObj.title,
           content: bodyObj.content,
           priority: bodyObj.priority,
+          resolved: bodyObj.resolved,
         },
       };
       const result = await db.collection("issues").updateOne(filter, update);

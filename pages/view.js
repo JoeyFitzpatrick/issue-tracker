@@ -9,6 +9,7 @@ export default function View({ issues }) {
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
+  const [resolved, setResolved] = useState();
   const [submitted, setSubmitted] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -29,6 +30,7 @@ export default function View({ issues }) {
         title: issueTitle,
         content: issueText,
         priority: priority,
+        resolved: resolved === undefined ? selectedIssue.resolved : resolved,
       }),
     });
     res = await res.json();
@@ -51,6 +53,11 @@ export default function View({ issues }) {
 
   const handlePriorityChange = (e) => {
     setPriority(e.target.value);
+  };
+
+  const handleResolvedChange = (e) => {
+      console.log(e.target.checked)
+      setResolved(e.target.checked)
   };
 
   const handleDelete = async (e) => {
@@ -130,6 +137,13 @@ export default function View({ issues }) {
                 </Col>
               </Form.Group>
             </fieldset>
+            <Form.Check
+              type="checkbox"
+              id="default-checkbox"
+              label="Resolved?"
+              defaultChecked={selectedIssue?.resolved}
+              onChange={handleResolvedChange}
+            />
             <Button variant="secondary" onClick={handleClose}>
               Cancel
             </Button>
@@ -156,6 +170,7 @@ export default function View({ issues }) {
                   <Button variant="primary" onClick={() => handleShow(issue)}>
                     Update
                   </Button>
+                  <Card.Text>{issue.resolved ? "Resolved" : "Not Resolved"}</Card.Text>
                 </Card.Body>
               </Card>
             </Col>
