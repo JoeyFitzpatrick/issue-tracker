@@ -27,5 +27,15 @@ export default async function handler(req, res) {
       const result = await db.collection("issues").updateOne(filter, update);
       res.json(result)
       break;
+    case "DELETE":
+      let body = JSON.parse(req.body);
+      const query = { _id: ObjectId(body.id) };
+      const deletion = await db.collection("issues").deleteOne(query)
+      if (deletion.deletedCount === 1) {
+        res.json({ status: 200, data: deletion })
+      } else {
+        res.json({ status: 404 })
+      }
+      break;
   }
 }

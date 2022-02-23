@@ -36,7 +36,7 @@ export default function View({ issues }) {
     setIssueTitle("");
     setIssueText("");
     setSubmitted(true);
-    setSelectedIssue(null)
+    setSelectedIssue(null);
     handleClose();
     window.location.reload(false);
   };
@@ -51,6 +51,23 @@ export default function View({ issues }) {
 
   const handlePriorityChange = (e) => {
     setPriority(e.target.value);
+  };
+
+  const handleDelete = async (e) => {
+    e.preventDefault();
+    let res = await fetch("http://localhost:3000/api/issues", {
+      method: "DELETE",
+      body: JSON.stringify({
+        id: selectedIssue._id,
+      }),
+    });
+    res = await res.json();
+    console.log(res);
+    setIssueTitle("");
+    setIssueText("");
+    setSelectedIssue(null);
+    handleClose();
+    window.location.reload(false);
   };
   return (
     <>
@@ -84,9 +101,7 @@ export default function View({ issues }) {
                 className="mb-3"
                 onChange={handlePriorityChange}
               >
-                <Form.Label>
-                  Priority
-                </Form.Label>
+                <Form.Label>Priority</Form.Label>
                 <Col sm={10}>
                   <Form.Check
                     type="radio"
@@ -121,6 +136,9 @@ export default function View({ issues }) {
             <Button variant="primary" onClick={handleSubmit}>
               Save Changes
             </Button>
+            <Button variant="danger" onClick={handleDelete}>
+              Delete
+            </Button>
           </Form>
         </Modal.Body>
       </Modal>
@@ -133,7 +151,7 @@ export default function View({ issues }) {
                 <Card.Body>
                   <Card.Title>{issue.title}</Card.Title>
                   <Card.Text>{issue.content}</Card.Text>
-                  <Card.Text>{issue.user}</Card.Text>
+                  <Card.Text>Priority: {issue.priority}</Card.Text>
                   <Card.Text>{issue.date}</Card.Text>
                   <Button variant="primary" onClick={() => handleShow(issue)}>
                     Update
