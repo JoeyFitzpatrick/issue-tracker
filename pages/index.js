@@ -28,6 +28,7 @@ export default function Home({ isConnected }) {
 
       <main>
         <Nav />
+        <a href="/api/auth/login">Login</a>
         <h1 className="title">
           Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
         </h1>
