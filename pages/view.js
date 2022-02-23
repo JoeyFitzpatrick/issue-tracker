@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Card, Button, Row, Col, Alert, Modal, Form } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
 
-export default function View({ issues }) {
+export default function View({ issuesObj }) {
+  const [originalIssues, setOriginalIssues] = useState([...issuesObj.data]);
+  const [issues, setIssues] = useState(issuesObj.data);
   const [show, setShow] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
   const [resolved, setResolved] = useState();
+  const [showResolved, setShowResolved] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
   const handleClose = () => setShow(false);
@@ -56,8 +59,8 @@ export default function View({ issues }) {
   };
 
   const handleResolvedChange = (e) => {
-      console.log(e.target.checked)
-      setResolved(e.target.checked)
+    console.log(e.target.checked);
+    setResolved(e.target.checked);
   };
 
   const handleDelete = async (e) => {
@@ -76,6 +79,38 @@ export default function View({ issues }) {
     handleClose();
     window.location.reload(false);
   };
+
+  const sortByPriority = () => {
+    const priorities = {
+      High: 1,
+      Medium: 2,
+      Low: 3,
+    };
+    const issuesCopy = [...issues].sort((a, b) =>
+      priorities[a.priority] > priorities[b.priority] ? 1 : -1
+    );
+    setIssues(issuesCopy);
+  };
+
+  const sortByOldest = () => {
+    const issuesCopy = [...issues].sort((a, b) => (a.date > b.date ? 1 : -1));
+    setIssues(issuesCopy);
+  };
+  const sortByNewest = () => {
+    const issuesCopy = [...issues].sort((a, b) => (a.date > b.date ? -1 : 1));
+    setIssues(issuesCopy);
+  };
+  useEffect(() => {
+    const issuesCopy = [...originalIssues]
+    issuesCopy.sort((a, b) => a.resolved ? 1 : -1)
+    setIssues(issuesCopy);
+  }, [showResolved]);
+
+  useEffect(() => {
+    sortByPriority();
+    const issuesCopy = [...issues].filter((issue) => !issue.resolved);
+    setIssues(issuesCopy);
+  }, []);
   return (
     <>
       <Modal show={show} onHide={handleClose} backdrop="static" size="lg">
@@ -157,25 +192,58 @@ export default function View({ issues }) {
         </Modal.Body>
       </Modal>
       <Nav />
-      {issues.data.length > 0 ? (
-        <Row xs={1} md={2} className="g-4" style={{ margin: "8em" }}>
-          {issues.data.map((issue) => (
-            <Col>
-              <Card>
-                <Card.Body>
-                  <Card.Title>{issue.title}</Card.Title>
-                  <Card.Text>{issue.content}</Card.Text>
-                  <Card.Text>Priority: {issue.priority}</Card.Text>
-                  <Card.Text>{issue.date}</Card.Text>
-                  <Button variant="primary" onClick={() => handleShow(issue)}>
-                    Update
-                  </Button>
-                  <Card.Text>{issue.resolved ? "Resolved" : "Not Resolved"}</Card.Text>
-                </Card.Body>
-              </Card>
-            </Col>
-          ))}
-        </Row>
+      {issues.length > 0 ? (
+        <div>
+          <Button
+            style={{ margin: "2em", marginTop: "6em" }}
+            onClick={sortByPriority}
+          >
+            Sort by Priority
+          </Button>
+          <Button
+            style={{ margin: "2em", marginTop: "6em" }}
+            onClick={sortByOldest}
+          >
+            Sort by Oldest
+          </Button>
+          <Button
+            style={{ margin: "2em", marginTop: "6em" }}
+            onClick={sortByNewest}
+          >
+            Sort by Newest
+          </Button>
+          <Button
+            style={{ margin: "2em", marginTop: "6em" }}
+            onClick={() => setShowResolved(true)}
+          >
+            Show Resolved Issues
+          </Button>
+          <Row
+            xs={1}
+            md={2}
+            className="g-4"
+            style={{ marginLeft: "4em", marginRight: "4em" }}
+          >
+            {issues.map((issue) => (
+              <Col>
+                <Card style={{border: issue.resolved && "2px solid green"}}>
+                  <Card.Body>
+                    <Card.Title>{issue.title}</Card.Title>
+                    <Card.Text>{issue.content}</Card.Text>
+                    <Card.Text>Priority: {issue.priority}</Card.Text>
+                    <Card.Text>{issue.date}</Card.Text>
+                    <Button variant="primary" onClick={() => handleShow(issue)}>
+                      Update
+                    </Button>
+                    <Card.Text>
+                      {issue.resolved ? "Resolved" : "Not Resolved"}
+                    </Card.Text>
+                  </Card.Body>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </div>
       ) : (
         <Alert style={{ margin: "8em" }}>No issues!</Alert>
       )}
@@ -190,9 +258,9 @@ export async function getServerSideProps(context) {
       "Content-Type": "application/json",
     },
   });
-  let issues = await res.json();
+  let issuesObj = await res.json();
 
   return {
-    props: { issues },
+    props: { issuesObj },
   };
 }
