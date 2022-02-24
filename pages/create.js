@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Row, Col, Form, Button, Alert } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 const testIssue = {
   title: "First issue",
@@ -118,16 +119,19 @@ export default function Create({ issues }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  let res = await fetch("http://localhost:3000/api/issues", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  let issues = await res.json();
+export const getServerSideProps = withPageAuthRequired({
+  returnTo: "/",
+  async getServerSideProps(context) {
+    let res = await fetch("http://localhost:3000/api/issues", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    let issues = await res.json();
 
-  return {
-    props: { issues },
-  };
-}
+    return {
+      props: { issues },
+    };
+  },
+});

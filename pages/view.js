@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, Button, Row, Col, Alert, Modal, Form } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
+import { withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 export default function View({ issuesObj }) {
   const [originalIssues, setOriginalIssues] = useState([...issuesObj.data]);
@@ -251,16 +252,19 @@ export default function View({ issuesObj }) {
   );
 }
 
-export async function getServerSideProps(context) {
-  let res = await fetch("http://localhost:3000/api/issues", {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  });
-  let issuesObj = await res.json();
-
-  return {
-    props: { issuesObj },
-  };
-}
+export const getServerSideProps = withPageAuthRequired({
+  returnTo: "/",
+  async getServerSideProps(context) {
+    let res = await fetch("http://localhost:3000/api/issues", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+    let issuesObj = await res.json();
+  
+    return {
+      props: { issuesObj },
+    };
+  },
+});

@@ -1,8 +1,9 @@
 import Head from "next/head";
 import clientPromise from "../lib/mongodb";
-import Nav from "../components/Nav"
-import '../node_modules/bootstrap/dist/css/bootstrap.min.css';
+import Nav from "../components/Nav";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
+import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
 /* 
 Features:
@@ -19,6 +20,11 @@ Login/Logout page, so user has issues attached to account
 */
 
 export default function Home({ isConnected }) {
+  const { user, error, isLoading } = useUser();
+
+  if (isLoading) return <div>Loading...</div>;
+  if (error) return <div>{error.message}</div>;
+
   return (
     <div className="container">
       <Head>
@@ -28,7 +34,14 @@ export default function Home({ isConnected }) {
 
       <main>
         <Nav />
+        {user && (
+          <div>
+            <h2>{user.name}</h2>
+            <p>{user.email}</p>
+          </div>
+        )}
         <a href="/api/auth/login">Login</a>
+        <a href="/api/auth/logout">Logout</a>
         <h1 className="title">
           Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
         </h1>
