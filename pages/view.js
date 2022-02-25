@@ -2,19 +2,31 @@ import { useState, useEffect } from "react";
 import { Card, Button, Row, Col, Alert, Modal, Form } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
+import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
-export default function View({ issuesObj }) {
-  const [originalIssues, setOriginalIssues] = useState([...issuesObj.data]);
-  const [issues, setIssues] = useState(issuesObj.data);
+export default function View() {
+  const { user, loading } = useUser();
+  const [isLoading, setLoading] = useState(false);
+  const [issues, setIssues] = useState(null);
   const [show, setShow] = useState(false);
   const [selectedIssue, setSelectedIssue] = useState(null);
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
   const [resolved, setResolved] = useState();
-  const [showResolved, setShowResolved] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+
+  useEffect(() => {
+    setLoading(true);
+    if (user) {
+      fetch(`api/issues/${user.sub}`)
+        .then((res) => res.json())
+        .then((data) => {
+          setIssues(data.data);
+          setLoading(false);
+        });
+    }
+  }, [user]);
 
   const handleClose = () => setShow(false);
   const handleShow = (issue) => {
@@ -82,15 +94,17 @@ export default function View({ issuesObj }) {
   };
 
   const sortByPriority = () => {
-    const priorities = {
-      High: 1,
-      Medium: 2,
-      Low: 3,
-    };
-    const issuesCopy = [...issues].sort((a, b) =>
-      priorities[a.priority] > priorities[b.priority] ? 1 : -1
-    );
-    setIssues(issuesCopy);
+    if (issues) {
+      const priorities = {
+        High: 1,
+        Medium: 2,
+        Low: 3,
+      };
+      const issuesCopy = [...issues].sort((a, b) =>
+        priorities[a.priority] > priorities[b.priority] ? 1 : -1
+      );
+      setIssues(issuesCopy);
+    }
   };
 
   const sortByOldest = () => {
@@ -101,17 +115,10 @@ export default function View({ issuesObj }) {
     const issuesCopy = [...issues].sort((a, b) => (a.date > b.date ? -1 : 1));
     setIssues(issuesCopy);
   };
-  useEffect(() => {
-    const issuesCopy = [...originalIssues]
-    issuesCopy.sort((a, b) => a.resolved ? 1 : -1)
-    setIssues(issuesCopy);
-  }, [showResolved]);
 
-  useEffect(() => {
-    sortByPriority();
-    const issuesCopy = [...issues].filter((issue) => !issue.resolved);
-    setIssues(issuesCopy);
-  }, []);
+
+  if (loading) return <div>Waiting for user...</div>;
+  if (isLoading) return <div>Loading...</div>;
   return (
     <>
       <Modal show={show} onHide={handleClose} backdrop="static" size="lg">
@@ -193,7 +200,7 @@ export default function View({ issuesObj }) {
         </Modal.Body>
       </Modal>
       <Nav />
-      {issues.length > 0 ? (
+      {issues?.length > 0 ? (
         <div>
           <Button
             style={{ margin: "2em", marginTop: "6em" }}
@@ -213,12 +220,6 @@ export default function View({ issuesObj }) {
           >
             Sort by Newest
           </Button>
-          <Button
-            style={{ margin: "2em", marginTop: "6em" }}
-            onClick={() => setShowResolved(true)}
-          >
-            Show Resolved Issues
-          </Button>
           <Row
             xs={1}
             md={2}
@@ -227,7 +228,7 @@ export default function View({ issuesObj }) {
           >
             {issues.map((issue) => (
               <Col>
-                <Card style={{border: issue.resolved && "2px solid green"}}>
+                <Card style={{ border: issue.resolved && "2px solid green" }}>
                   <Card.Body>
                     <Card.Title>{issue.title}</Card.Title>
                     <Card.Text>{issue.content}</Card.Text>
@@ -251,20 +252,3 @@ export default function View({ issuesObj }) {
     </>
   );
 }
-
-export const getServerSideProps = withPageAuthRequired({
-  returnTo: "/",
-  async getServerSideProps(context) {
-    let res = await fetch("http://localhost:3000/api/issues", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    let issuesObj = await res.json();
-  
-    return {
-      props: { issuesObj },
-    };
-  },
-});
