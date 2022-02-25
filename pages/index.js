@@ -38,6 +38,7 @@ export default function Home({ isConnected }) {
           <div>
             <h2>{user.name}</h2>
             <p>{user.email}</p>
+            <p>{JSON.stringify(user)}</p>
           </div>
         )}
         <a href="/api/auth/login">Login</a>

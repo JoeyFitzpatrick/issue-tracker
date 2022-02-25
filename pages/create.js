@@ -2,19 +2,11 @@ import { useState } from "react";
 import { Row, Col, Form, Button, Alert } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
-import { withPageAuthRequired } from "@auth0/nextjs-auth0";
-
-const testIssue = {
-  title: "First issue",
-  content: "this is a test",
-  priority: "medium",
-  user: "Joey",
-  date: Date(),
-  tags: ["test", "database"],
-  resolved: false,
-};
+import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0";
 
 export default function Create({ issues }) {
+  const { user, error, isLoading } = useUser();
+
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
@@ -28,7 +20,7 @@ export default function Create({ issues }) {
         title: issueTitle,
         content: issueText,
         priority: priority,
-        user: "Joey",
+        user: user.sub,
         date: Date(),
         tags: ["test", "database"],
         resolved: false,
