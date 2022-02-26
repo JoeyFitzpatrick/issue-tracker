@@ -39,7 +39,7 @@ export default function View() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/issues", {
+    let res = await fetch("/api/issues", {
       method: "PUT",
       body: JSON.stringify({
         id: selectedIssue._id,
@@ -78,7 +78,7 @@ export default function View() {
 
   const handleDelete = async (e) => {
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/issues", {
+    let res = await fetch("/api/issues", {
       method: "DELETE",
       body: JSON.stringify({
         id: selectedIssue._id,

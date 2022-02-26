@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0";
 
-export default function Create({ issues }) {
+export default function Create() {
   const { user, error, isLoading } = useUser();
 
   const [issueTitle, setIssueTitle] = useState();
@@ -14,7 +14,7 @@ export default function Create({ issues }) {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    let res = await fetch("http://localhost:3000/api/issues", {
+    let res = await fetch("/api/issues", {
       method: "POST",
       body: JSON.stringify({
         title: issueTitle,
@@ -110,20 +110,3 @@ export default function Create({ issues }) {
     </>
   );
 }
-
-export const getServerSideProps = withPageAuthRequired({
-  returnTo: "/",
-  async getServerSideProps(context) {
-    let res = await fetch("http://localhost:3000/api/issues", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    let issues = await res.json();
-
-    return {
-      props: { issues },
-    };
-  },
-});
