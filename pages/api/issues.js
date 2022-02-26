@@ -1,7 +1,8 @@
 import clientPromise from "../../lib/mongodb";
+import { withApiAuthRequired } from "@auth0/nextjs-auth0";
 var ObjectId = require('mongodb').ObjectId;
 
-export default async function handler(req, res) {
+export default withApiAuthRequired(async function handler(req, res) {
   const client = await clientPromise;
   const db = client.db("issue_tracker_db");
   switch (req.method) {
@@ -39,4 +40,4 @@ export default async function handler(req, res) {
       }
       break;
   }
-}
+})
