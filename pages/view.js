@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
-export default function View() {
+export default withPageAuthRequired(function View() {
   const { user, loading } = useUser();
   const [isLoading, setLoading] = useState(false);
   const [issues, setIssues] = useState(null);
@@ -251,4 +251,4 @@ export default function View() {
       )}
     </>
   );
-}
+})

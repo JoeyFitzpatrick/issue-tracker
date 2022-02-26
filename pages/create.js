@@ -4,7 +4,7 @@ import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0";
 
-export default function Create() {
+export default withPageAuthRequired(function Create() {
   const { user, error, isLoading } = useUser();
 
   const [issueTitle, setIssueTitle] = useState();
@@ -109,4 +109,4 @@ export default function Create() {
       )}
     </>
   );
-}
+})
