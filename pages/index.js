@@ -36,9 +36,7 @@ export default function Home({ isConnected }) {
         <Nav />
         {user && (
           <div>
-            <h2>{user.name}</h2>
-            <p>{user.email}</p>
-            <p>{JSON.stringify(user)}</p>
+            <h2>Logged in as {user.name}</h2>
           </div>
         )}
         <a href="/api/auth/login">Login</a>
