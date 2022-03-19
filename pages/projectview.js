@@ -61,7 +61,6 @@ export default withPageAuthRequired(function ProjectView() {
           />
         </Form.Group>
       </Form>
-      <div>{JSON.stringify(projects)}</div>
     </>
   );
 });

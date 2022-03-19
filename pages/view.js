@@ -116,7 +116,6 @@ export default withPageAuthRequired(function View() {
     setIssues(issuesCopy);
   };
 
-
   if (loading) return <div>Waiting for user...</div>;
   if (isLoading) return <div>Loading...</div>;
   return (
