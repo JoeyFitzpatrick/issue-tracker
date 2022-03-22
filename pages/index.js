@@ -2,7 +2,7 @@ import Head from "next/head";
 import clientPromise from "../lib/mongodb";
 import Nav from "../components/Nav";
 import { useUser } from "@auth0/nextjs-auth0";
-import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
+
 
 
 export default function Home({ isConnected }) {
