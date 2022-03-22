@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { Card, Button, Row, Col, Alert, Modal, Form } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
+import ProjectColumn from "../components/ProjectColumn";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
 
 export default withPageAuthRequired(function View() {
@@ -200,54 +201,66 @@ export default withPageAuthRequired(function View() {
       </Modal>
       <Nav />
       {issues?.length > 0 ? (
-        <div>
-          <Button
-            style={{ margin: "2em", marginTop: "6em" }}
-            onClick={sortByPriority}
-          >
-            Sort by Priority
-          </Button>
-          <Button
-            style={{ margin: "2em", marginTop: "6em" }}
-            onClick={sortByOldest}
-          >
-            Sort by Oldest
-          </Button>
-          <Button
-            style={{ margin: "2em", marginTop: "6em" }}
-            onClick={sortByNewest}
-          >
-            Sort by Newest
-          </Button>
-          <Row
-            xs={1}
-            md={2}
-            className="g-4"
-            style={{ marginLeft: "4em", marginRight: "4em" }}
-          >
-            {issues.map((issue) => (
-              <Col>
-                <Card style={{ border: issue.resolved && "2px solid green" }}>
-                  <Card.Body>
-                    <Card.Title>{issue.title}</Card.Title>
-                    <Card.Text>{issue.content}</Card.Text>
-                    <Card.Text>Priority: {issue.priority}</Card.Text>
-                    <Card.Text>{issue.date}</Card.Text>
-                    <Button variant="primary" onClick={() => handleShow(issue)}>
-                      Update
-                    </Button>
-                    <Card.Text>
-                      {issue.resolved ? "Resolved" : "Not Resolved"}
-                    </Card.Text>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
+        <div className="container">
+          <div className="row">
+            <div className="col-3">
+              <ProjectColumn />
+            </div>
+            <div className="col-8">
+              <Button
+                style={{ margin: "2em", marginTop: "6em" }}
+                onClick={sortByPriority}
+              >
+                Sort by Priority
+              </Button>
+              <Button
+                style={{ margin: "2em", marginTop: "6em" }}
+                onClick={sortByOldest}
+              >
+                Sort by Oldest
+              </Button>
+              <Button
+                style={{ margin: "2em", marginTop: "6em" }}
+                onClick={sortByNewest}
+              >
+                Sort by Newest
+              </Button>
+              <Row
+                xs={1}
+                md={2}
+                className="g-4"
+                style={{ marginLeft: "4em", marginRight: "4em" }}
+              >
+                {issues.map((issue) => (
+                  <Col>
+                    <Card
+                      style={{ border: issue.resolved && "2px solid green" }}
+                    >
+                      <Card.Body>
+                        <Card.Title>{issue.title}</Card.Title>
+                        <Card.Text>{issue.content}</Card.Text>
+                        <Card.Text>Priority: {issue.priority}</Card.Text>
+                        <Card.Text>{issue.date}</Card.Text>
+                        <Button
+                          variant="primary"
+                          onClick={() => handleShow(issue)}
+                        >
+                          Update
+                        </Button>
+                        <Card.Text>
+                          {issue.resolved ? "Resolved" : "Not Resolved"}
+                        </Card.Text>
+                      </Card.Body>
+                    </Card>
+                  </Col>
+                ))}
+              </Row>
+            </div>
+          </div>
         </div>
       ) : (
         <Alert style={{ margin: "8em" }}>No issues!</Alert>
       )}
     </>
   );
-})
+});

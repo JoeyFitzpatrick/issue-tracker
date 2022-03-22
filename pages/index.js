@@ -2,22 +2,8 @@ import Head from "next/head";
 import clientPromise from "../lib/mongodb";
 import Nav from "../components/Nav";
 import { useUser, withPageAuthRequired } from "@auth0/nextjs-auth0";
-
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 
-/* 
-Features:
-
-DB:
-Create: Issues form, which allows input for issue and priority level, and also records user and timestamp
-Read: page where overview of all issues can be seen, and specific issues can be selected to view details
-Update: Add notes to existing issue, mark/unmark as resolved, change priority level
-Delete: Delete issue entirely
-
-Auth:
-Login/Logout page, so user has issues attached to account
-
-*/
 
 export default function Home({ isConnected }) {
   const { user, error, isLoading } = useUser();
@@ -39,8 +25,6 @@ export default function Home({ isConnected }) {
             <h2>Logged in as {user.name}</h2>
           </div>
         )}
-        <a href="/api/auth/login">Login</a>
-        <a href="/api/auth/logout">Logout</a>
         <h1 className="title">
           Welcome to <a href="https://nextjs.org">Next.js with MongoDB!</a>
         </h1>

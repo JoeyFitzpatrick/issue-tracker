@@ -11,6 +11,7 @@ export default withPageAuthRequired(function Create() {
   const [issueText, setIssueText] = useState();
   const [priority, setPriority] = useState();
   const [submitted, setSubmitted] = useState(false);
+  const [project, setProject] = useState();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -20,6 +21,7 @@ export default withPageAuthRequired(function Create() {
         title: issueTitle,
         content: issueText,
         priority: priority,
+        project: project,
         user: user.sub,
         date: Date(),
         tags: ["test", "database"],
