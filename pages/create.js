@@ -3,9 +3,10 @@ import { Row, Col, Form, Button, Alert } from "react-bootstrap";
 import "../node_modules/bootstrap/dist/css/bootstrap.min.css";
 import Nav from "../components/Nav";
 import { withPageAuthRequired, useUser } from "@auth0/nextjs-auth0";
+import ProjectColumn from "../components/ProjectColumn";
 
 export default withPageAuthRequired(function Create() {
-  const { user, error, isLoading } = useUser();
+  const { user } = useUser();
 
   const [issueTitle, setIssueTitle] = useState();
   const [issueText, setIssueText] = useState();
@@ -47,63 +48,70 @@ export default withPageAuthRequired(function Create() {
     setPriority(e.target.value);
   };
 
+  const handleProjectChange = (project) => {
+    setProject(project.title);
+  };
+
   return (
     <>
       <Nav />
       {!submitted ? (
-        <Form onSubmit={handleSubmit} style={{ margin: "8em" }}>
-          <Form.Group className="mb-3" controlId="createFormTitle">
-            <Form.Label>Issue Title</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={1}
-              onChange={handleIssueTitleChange}
-            />
-          </Form.Group>
-          <Form.Group className="mb-3" controlId="createFormText">
-            <Form.Label>Issue Description</Form.Label>
-            <Form.Control
-              as="textarea"
-              rows={3}
-              onChange={handleIssueTextChange}
-            />
-          </Form.Group>
-          <fieldset>
-            <Form.Group
-              as={Row}
-              className="mb-3"
-              onChange={handlePriorityChange}
-            >
-              <Form.Label as="legend" column sm={2}>
-                Priority
-              </Form.Label>
-              <Col sm={10}>
-                <Form.Check
-                  type="radio"
-                  label="High"
-                  value="High"
-                  name="formHorizontalRadios"
-                  id="formHorizontalRadios1"
-                />
-                <Form.Check
-                  type="radio"
-                  label="Medium"
-                  value="Medium"
-                  name="formHorizontalRadios"
-                  id="formHorizontalRadios2"
-                />
-                <Form.Check
-                  type="radio"
-                  label="Low"
-                  value="Low"
-                  name="formHorizontalRadios"
-                  id="formHorizontalRadios3"
-                />
-              </Col>
+        <>
+          <Form onSubmit={handleSubmit} style={{ margin: "8em" }}>
+            <Form.Group className="mb-3" controlId="createFormTitle">
+              <Form.Label>Issue Title</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={1}
+                onChange={handleIssueTitleChange}
+              />
             </Form.Group>
-          </fieldset>
-          <Button type="submit">Submit Issue</Button>
-        </Form>
+            <Form.Group className="mb-3" controlId="createFormText">
+              <Form.Label>Issue Description</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                onChange={handleIssueTextChange}
+              />
+            </Form.Group>
+            <fieldset>
+              <Form.Group
+                as={Row}
+                className="mb-3"
+                onChange={handlePriorityChange}
+              >
+                <Form.Label as="legend" column sm={2}>
+                  Priority
+                </Form.Label>
+                <Col sm={10}>
+                  <Form.Check
+                    type="radio"
+                    label="High"
+                    value="High"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios1"
+                  />
+                  <Form.Check
+                    type="radio"
+                    label="Medium"
+                    value="Medium"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios2"
+                  />
+                  <Form.Check
+                    type="radio"
+                    label="Low"
+                    value="Low"
+                    name="formHorizontalRadios"
+                    id="formHorizontalRadios3"
+                  />
+                </Col>
+                  <ProjectColumn dropdown={true} onClick={handleProjectChange} />
+              </Form.Group>
+            </fieldset>
+            <Button type="submit">Submit Issue</Button>
+          </Form>
+        </>
       ) : (
         <Alert style={{ margin: "8em" }} variant="success">
           Issue submitted!
@@ -111,4 +119,4 @@ export default withPageAuthRequired(function Create() {
       )}
     </>
   );
-})
+});

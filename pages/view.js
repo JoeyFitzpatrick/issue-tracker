@@ -240,6 +240,7 @@ export default withPageAuthRequired(function View() {
                         <Card.Title>{issue.title}</Card.Title>
                         <Card.Text>{issue.content}</Card.Text>
                         <Card.Text>Priority: {issue.priority}</Card.Text>
+                        <Card.Text>Project: {issue.project}</Card.Text>
                         <Card.Text>{issue.date}</Card.Text>
                         <Button
                           variant="primary"
