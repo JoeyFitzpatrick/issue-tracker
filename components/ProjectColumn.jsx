@@ -25,7 +25,7 @@ const ProjectColumn = ({ dropdown, onClick }) => {
       projects?.length > 0 && (
         <DropdownButton
           variant="outline-secondary"
-          title="Select Project"
+          title={"Select Project"}
           id="input-group-dropdown-1"
         >
           {projects.map((project) => (

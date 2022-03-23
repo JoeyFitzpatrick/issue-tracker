@@ -107,6 +107,7 @@ export default withPageAuthRequired(function Create() {
                   />
                 </Col>
                   <ProjectColumn dropdown={true} onClick={handleProjectChange} />
+                  {project && `Project: ${project}`}
               </Form.Group>
             </fieldset>
             <Button type="submit">Submit Issue</Button>
