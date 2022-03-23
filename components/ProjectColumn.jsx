@@ -40,7 +40,7 @@ const ProjectColumn = ({ dropdown, onClick }) => {
     <div style={{ backgroundColor: "red" }}>
       {" "}
       {projects.map((project) => (
-        <Card>
+        <Card onClick={() => onClick(project)}>
           <Card.Body>
             <Card.Title>{project.title}</Card.Title>
           </Card.Body>

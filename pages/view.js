@@ -16,6 +16,7 @@ export default withPageAuthRequired(function View() {
   const [priority, setPriority] = useState();
   const [resolved, setResolved] = useState();
   const [submitted, setSubmitted] = useState(false);
+  const [project, setProject] = useState();
 
   useEffect(() => {
     setLoading(true);
@@ -75,6 +76,10 @@ export default withPageAuthRequired(function View() {
   const handleResolvedChange = (e) => {
     console.log(e.target.checked);
     setResolved(e.target.checked);
+  };
+
+  const handleProjectChange = (project) => {
+    setProject(project.title);
   };
 
   const handleDelete = async (e) => {
@@ -200,11 +205,12 @@ export default withPageAuthRequired(function View() {
         </Modal.Body>
       </Modal>
       <Nav />
+      {project}
       {issues?.length > 0 ? (
         <div className="container">
           <div className="row">
             <div className="col-3">
-              <ProjectColumn />
+              <ProjectColumn onClick={handleProjectChange} />
             </div>
             <div className="col-8">
               <Button
