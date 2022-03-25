@@ -122,6 +122,10 @@ export default withPageAuthRequired(function View() {
     setIssues(issuesCopy);
   };
 
+  const projectFilter = (issue) => {
+    return issue.project === project;
+  };
+
   if (loading) return <div>Waiting for user...</div>;
   if (isLoading) return <div>Loading...</div>;
   return (
@@ -205,13 +209,13 @@ export default withPageAuthRequired(function View() {
         </Modal.Body>
       </Modal>
       <Nav />
-      {project}
-      {issues?.length > 0 ? (
-        <div className="container">
-          <div className="row">
-            <div className="col-3">
-              <ProjectColumn onClick={handleProjectChange} />
-            </div>
+
+      <div className="container">
+        <div className="row">
+          <div className="col-3">
+            <ProjectColumn onClick={handleProjectChange} />
+          </div>
+          {issues?.filter(projectFilter).length > 0 ? (
             <div className="col-8">
               <Button
                 style={{ margin: "2em", marginTop: "6em" }}
@@ -237,7 +241,7 @@ export default withPageAuthRequired(function View() {
                 className="g-4"
                 style={{ marginLeft: "4em", marginRight: "4em" }}
               >
-                {issues.map((issue) => (
+                {issues.filter(projectFilter).map((issue) => (
                   <Col>
                     <Card
                       style={{ border: issue.resolved && "2px solid green" }}
@@ -263,11 +267,11 @@ export default withPageAuthRequired(function View() {
                 ))}
               </Row>
             </div>
-          </div>
+          ) : (
+            <Alert style={{ margin: "8em" }}>No issues!</Alert>
+          )}
         </div>
-      ) : (
-        <Alert style={{ margin: "8em" }}>No issues!</Alert>
-      )}
+      </div>
     </>
   );
 });

@@ -32,7 +32,7 @@ export default function Home({ isConnected }) {
         <h3 className="title">Here is the <a href="https://github.com/JoeyFitzpatrick/issue-tracker" target="blank">source code.</a></h3>
 
         {isConnected ? (
-          <h2 className="subtitle">You are connected to the database.</h2>
+          <h2 className="subtitle">To get started, create an issue or project</h2>
         ) : (
           <h2 className="subtitle">
             You are NOT connected to MongoDB. Check the <code>README.md</code>{" "}
